@@ -4,7 +4,7 @@ from app.models.task import Task
 from datetime import datetime
 import os
 import requests
-from .route_utilities import validate_model, create_model
+from .route_utilities import validate_model, create_model, delete_model
 
 bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 
@@ -46,10 +46,7 @@ def update_task(task_id):
 
 @bp.delete("/<task_id>")
 def delete_task(task_id):
-    task = validate_model(Task, task_id)
-    db.session.delete(task)
-    db.session.commit()
-    return {"details": f"Task {task_id} \"{task.title}\" successfully deleted"}
+    return delete_model(Task, task_id)
 
 @bp.patch("/<task_id>/mark_complete")
 def update_task_complete(task_id):
