@@ -1,4 +1,4 @@
-from flask import abort, make_response
+from flask import abort, make_response, request
 from ..db import db
 
 def validate_model(cls, model_id):
@@ -37,3 +37,24 @@ def delete_model(cls, model_id):
     db.session.delete(model)
     db.session.commit()
     return {"details": f"{cls.__name__} {model_id} \"{model.title}\" successfully deleted"}
+
+def get_models_with_query_params(cls, filters=None):
+    query = db.select(cls)
+    
+    if filters:
+        for attribute, value in filters.items():
+            if hasattr(cls, attribute):
+                query = query.where(getattr(cls, attribute).ilike(f"%{value}%"))
+    
+    sort_by = request.args.get("sort_by", "id")
+    sort_order = request.args.get("sort_order", "asc")
+    if sort_by and hasattr(cls, sort_by):
+        if sort_order == "desc":
+            query = query.order_by(getattr(cls, sort_by).desc())
+        else:
+            query = query.order_by(getattr(cls, sort_by))
+    else:
+        query = query.order_by(cls.id)
+
+    models = db.session.scalars(query)
+    return [model.to_dict() for model in models]

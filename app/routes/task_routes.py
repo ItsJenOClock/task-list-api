@@ -4,7 +4,7 @@ from app.models.task import Task
 from datetime import datetime
 import os
 import requests
-from .route_utilities import validate_model, create_model, delete_model
+from .route_utilities import validate_model, create_model, delete_model, get_models_with_query_params
 
 bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 
@@ -15,19 +15,7 @@ def create_task():
 
 @bp.get("")
 def get_all_tasks():
-    query = db.select(Task)
-
-    sort_param = request.args.get("sort")
-    if sort_param == "asc":
-        query = query.order_by(Task.title)
-    elif sort_param == "desc":
-        query = query.order_by(Task.title.desc())
-    else:
-        query = query.order_by(Task.id)
-
-    tasks = db.session.scalars(query)
-    tasks_response = [task.to_dict() for task in tasks]
-    return tasks_response, 200
+    return get_models_with_query_params(Task, request.args)
 
 @bp.get("/<task_id>")
 def get_single_task(task_id):
