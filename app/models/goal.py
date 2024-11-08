@@ -6,14 +6,15 @@ class Goal(db.Model):
     title: Mapped[str]
     tasks: Mapped[list["Task"]] = relationship(back_populates="goal")
 
-    def to_dict(self):
-        return dict(
+    def to_dict(self, contains_tasks=False):
+        goal_as_dict = dict(
             id=self.id,
             title=self.title
         )
+        if contains_tasks:
+            goal_as_dict["tasks"] = [task.to_dict() for task in self.tasks]
+        return goal_as_dict
 
     @classmethod
     def from_dict(cls, goal_data):
-        return cls(
-            title=goal_data["title"]
-        )
+        return cls(title=goal_data["title"])
