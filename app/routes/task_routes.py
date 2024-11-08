@@ -26,7 +26,7 @@ def get_single_task(task_id):
 def update_task(task_id):
     task = validate_model(Task, task_id)
     request_body = request.get_json()
-
+    
     task.title = request_body["title"]
     task.description = request_body["description"]
     db.session.commit()
@@ -41,7 +41,7 @@ def update_task_complete(task_id):
     task = validate_model(Task,task_id)
     task.completed_at = datetime.now()
     db.session.commit()
-
+    
     request_body = {
         "token": os.environ.get("SLACK_BOT_TOKEN"),
         "channel": os.environ.get("SLACK_CHANNEL_ID"), 
