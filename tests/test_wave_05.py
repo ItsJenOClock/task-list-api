@@ -94,6 +94,7 @@ def test_update_goal(client, one_goal):
     goal = Goal.query.get(1)
     assert goal.title == "Updated Goal Title"
 
+
 def test_update_goal_not_found(client):
     # Act
     response = client.put("/goals/1", json={
@@ -106,6 +107,7 @@ def test_update_goal_not_found(client):
     assert response_body == {
         "message": "Goal 1 not found"
     }
+
 
 def test_delete_goal(client, one_goal):
     # Act
