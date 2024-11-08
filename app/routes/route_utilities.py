@@ -46,10 +46,10 @@ def get_models_with_query_params(cls, filters=None):
             if hasattr(cls, attribute):
                 query = query.where(getattr(cls, attribute).ilike(f"%{value}%"))
     
-    sort_by = request.args.get("sort_by", "id")
-    sort_order = request.args.get("sort_order", "asc")
+    sort_by = request.args.get("sort_by", "title")
+    sort = request.args.get("sort", "asc") # sort order
     if sort_by and hasattr(cls, sort_by):
-        if sort_order == "desc":
+        if sort == "desc":
             query = query.order_by(getattr(cls, sort_by).desc())
         else:
             query = query.order_by(getattr(cls, sort_by))
