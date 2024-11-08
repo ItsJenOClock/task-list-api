@@ -4,22 +4,14 @@ from app.models.task import Task
 from datetime import datetime
 import os
 import requests
-from .route_utilities import validate_model
+from .route_utilities import validate_model, create_model
 
 bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 
 @bp.post("")
 def create_task():
     request_body = request.get_json()
-
-    try:
-        new_task = Task.from_dict(request_body)
-    except:
-        abort(make_response({"details": "Invalid data"}, 400))
-    
-    db.session.add(new_task)
-    db.session.commit()
-    return {"task": new_task.to_dict()}, 201
+    return create_model(Task, request_body)
 
 @bp.get("")
 def get_all_tasks():
