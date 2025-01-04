@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from .db import db, migrate
 from .models import task, goal
 from .routes.task_routes import bp as tasks_bp
@@ -24,4 +25,6 @@ def create_app(config=None):
     # Register Blueprints here
     app.register_blueprint(tasks_bp)
     app.register_blueprint(goals_bp)
+    
+    CORS(app)
     return app
